@@ -1,0 +1,2455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outreach Agent — Bombay Media</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFDE00'/><text y='72' x='50' text-anchor='middle' font-size='60' font-family='sans-serif' font-weight='bold' fill='%23320753'>B</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Serif+Display:ital@1&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Bombay Media — Outreach Agent Console
+   Single committed dark theme: the brand is dark-mode-first
+   and every surface follows it.
+   Every colour is painted explicitly so the page holds on any
+   host ground rather than borrowing one.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Ground + surfaces. Neutrals carry a slight purple bias toward
+     the brand's secondary palette so they read chosen, not default. */
+  --ground:      #0A0A0A;
+  --surface:     #151218;
+  --surface-2:   #1C1821;
+  --surface-3:   #241F2B;
+  --line:        #29232F;
+  --line-soft:   #1F1A25;
+
+  /* Text */
+  --text:        #F5F0E8;
+  --text-2:      #C5C0BC;
+  --muted:       #9A9490;
+  --faint:       #6B6569;
+
+  /* Brand */
+  --accent:      #FFDE00;
+  --accent-dim:  #C4AA00;
+  --accent-ink:  #0A0A0A;
+  --purple:      #320753;
+  --purple-2:    #37245C;
+  --purple-line: #4A2E76;
+
+  /* Semantics — deliberately desaturated so brand yellow stays loudest */
+  --ok:          #6FBF8B;
+  --ok-bg:       #12241A;
+  --warn:        #D9A03D;
+  --warn-bg:     #251C0E;
+  --bad:         #D4635F;
+  --bad-bg:      #260F0F;
+  --info:        #7FA6D9;
+
+  --radius:      14px;
+  --radius-sm:   9px;
+
+  --sans:  "DM Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --display: "Bebas Neue", "DM Sans", sans-serif;
+  --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --serif: "DM Serif Display", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Ambient: one soft purple orb + a faint grid, both from the brand's
+   own design-system notes. Fixed, non-interactive, very low contrast. */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(680px 420px at 8% -6%, rgba(50, 7, 83, 0.55), transparent 70%),
+    radial-gradient(520px 380px at 96% 4%, rgba(55, 36, 92, 0.32), transparent 72%);
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(245, 240, 232, 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 240, 232, 0.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 244px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* ── Left rail ─────────────────────────────────────────────── */
+
+.rail {
+  border-right: 1px solid var(--line);
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: 22px 16px 20px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.brand { display: flex; align-items: center; gap: 11px; padding: 0 6px; }
+.brand img {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: block;
+  box-shadow: 0 0 0 1px rgba(255, 222, 0, 0.28), 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+.brand-name {
+  font-family: var(--display);
+  font-size: 20px;
+  letter-spacing: 0.055em;
+  line-height: 1;
+  color: var(--text);
+}
+.brand-sub {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-top: 3px;
+}
+
+.nav-group { display: flex; flex-direction: column; gap: 2px; }
+.nav-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 0 10px 8px;
+}
+
+.nav-item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--sans);
+  font-size: 14px;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.nav-item:hover { background: var(--surface); color: var(--text); }
+.nav-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.nav-item[aria-current="true"] { background: var(--surface-2); color: var(--text); }
+.nav-item[aria-current="true"]::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  border-radius: 0 3px 3px 0;
+  background: var(--accent);
+}
+.nav-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 20px;
+  padding: 1px 7px;
+  font-weight: 500;
+}
+.nav-badge.is-quiet {
+  background: var(--surface-3);
+  color: var(--muted);
+}
+
+.rail-foot {
+  margin-top: auto;
+  border-top: 1px solid var(--line-soft);
+  padding: 14px 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.rail-foot .k {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--faint);
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.rail-foot .k b { color: var(--text-2); font-weight: 500; }
+
+/* ── Top status strip ──────────────────────────────────────── */
+
+main { min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 13px 30px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(10, 10, 10, 0.86);
+  backdrop-filter: blur(14px);
+}
+
+.gate {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ok);
+  background: var(--ok-bg);
+  border: 1px solid rgba(111, 191, 139, 0.32);
+  padding: 5px 11px;
+  border-radius: 20px;
+}
+.gate .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 3px rgba(111, 191, 139, 0.16);
+}
+
+.mode-switch {
+  display: inline-flex;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+}
+.mode-switch button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 13px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.mode-switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mode-switch button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 500; }
+.mode-switch button.live[aria-pressed="true"] { background: var(--bad); color: var(--text); }
+
+.topbar-spacer { margin-left: auto; }
+
+.preview-pill {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 20px;
+  padding: 5px 11px;
+}
+
+/* ── View shell ────────────────────────────────────────────── */
+
+.view { display: none; padding: 30px 30px 80px; max-width: 1180px; }
+.view.is-active { display: block; animation: fade 0.22s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.view-head { margin-bottom: 24px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+  margin-bottom: 9px;
+}
+h1 {
+  font-family: var(--display);
+  font-size: 40px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  margin: 0 0 10px;
+  text-wrap: balance;
+}
+.view-head p { margin: 0; color: var(--muted); max-width: 62ch; font-size: 14.5px; }
+
+h2 {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+
+/* ── Cards ─────────────────────────────────────────────────── */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.card-head .hint { color: var(--faint); font-size: 12.5px; }
+
+.grid { display: grid; gap: 16px; }
+.grid.two { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.grid.three { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+
+/* ── Form controls ─────────────────────────────────────────── */
+
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > label,
+.label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.field .help { font-size: 12.5px; color: var(--faint); line-height: 1.45; }
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  width: 100%;
+  transition: border-color 0.14s ease, box-shadow 0.14s ease;
+}
+textarea { resize: vertical; line-height: 1.6; }
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 222, 0, 0.14);
+}
+input.mono, select.mono, textarea.mono { font-family: var(--mono); font-size: 12.5px; }
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 32px;
+}
+
+.check {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 9px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+.check input { accent-color: var(--accent); width: 15px; height: 15px; margin: 2px 0 0; flex: none; }
+.check:hover { color: var(--text); }
+.check .sub { display: block; color: var(--faint); font-size: 12.5px; }
+
+/* Chip multi-select — used for ICP titles, seniorities, geographies */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip {
+  appearance: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+.chip:hover { border-color: var(--purple-line); color: var(--text-2); }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chip[aria-pressed="true"] {
+  background: rgba(255, 222, 0, 0.1);
+  border-color: rgba(255, 222, 0, 0.45);
+  color: var(--accent);
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+
+.btn {
+  appearance: none;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.1s ease, background 0.14s ease, border-color 0.14s ease, opacity 0.14s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { background: #FFE740; }
+
+.btn-ghost { background: var(--surface-2); color: var(--text-2); border-color: var(--line); }
+.btn-ghost:hover:not(:disabled) { background: var(--surface-3); color: var(--text); }
+
+.btn-danger { background: var(--bad-bg); color: var(--bad); border-color: rgba(212, 99, 95, 0.35); }
+.btn-danger:hover:not(:disabled) { background: #351616; }
+
+.btn-sm { font-size: 12.5px; padding: 6px 12px; }
+
+/* ── Stage rail (the pipeline is a real sequence) ──────────── */
+
+.stages { display: flex; flex-direction: column; gap: 0; }
+.stage {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 11px 0;
+  position: relative;
+}
+.stage + .stage::before {
+  content: "";
+  position: absolute;
+  left: 21px;
+  top: -14px;
+  height: 28px;
+  width: 1px;
+  background: var(--line);
+}
+.stage-num {
+  font-family: var(--display);
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: var(--faint);
+  display: grid;
+  place-items: center;
+  background: var(--ground);
+  transition: all 0.25s ease;
+}
+.stage-name { font-size: 14px; color: var(--muted); transition: color 0.2s ease; }
+.stage-name b { display: block; font-weight: 500; color: var(--text-2); font-size: 14px; }
+.stage-name span { font-size: 12.5px; color: var(--faint); }
+.stage-state {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.stage.is-done .stage-num { border-color: rgba(111, 191, 139, 0.4); color: var(--ok); }
+.stage.is-done .stage-state { color: var(--ok); }
+.stage.is-active .stage-num {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(255, 222, 0, 0.1);
+}
+.stage.is-active .stage-name b { color: var(--text); }
+.stage.is-active .stage-state { color: var(--accent); }
+.stage.is-skipped .stage-state { color: var(--faint); }
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.stage.is-active .stage-state { animation: pulse 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .stage.is-active .stage-state { animation: none; }
+  .view.is-active { animation: none; }
+}
+
+/* ── Metrics ───────────────────────────────────────────────── */
+
+.metric { display: flex; flex-direction: column; gap: 3px; }
+.metric .n {
+  font-family: var(--display);
+  font-size: 38px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.metric .n.accent { color: var(--accent); }
+.metric .n.ok { color: var(--ok); }
+.metric .n.small { font-size: 27px; }
+.metric .l {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 18px;
+}
+
+/* ── Status pills ──────────────────────────────────────────── */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.pill.ok   { color: var(--ok);   background: var(--ok-bg);   border-color: rgba(111, 191, 139, 0.3); }
+.pill.warn { color: var(--warn); background: var(--warn-bg); border-color: rgba(217, 160, 61, 0.3); }
+.pill.bad  { color: var(--bad);  background: var(--bad-bg);  border-color: rgba(212, 99, 95, 0.3); }
+.pill.neutral { color: var(--muted); background: var(--surface-2); border-color: var(--line); }
+.pill.brand { color: var(--accent); background: rgba(255, 222, 0, 0.09); border-color: rgba(255, 222, 0, 0.3); }
+
+/* ── Agent role cards ──────────────────────────────────────── */
+
+.role {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--purple-line);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.role-head { display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.role-title {
+  font-family: var(--display);
+  font-size: 24px;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--text);
+}
+.role-job { font-size: 13px; color: var(--muted); margin-top: 5px; max-width: 46ch; }
+.role-stats {
+  display: flex;
+  gap: 22px;
+  padding: 13px 0;
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  flex-wrap: wrap;
+}
+
+details.prompt { border-radius: var(--radius-sm); }
+details.prompt > summary {
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  list-style: none;
+  padding: 7px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+details.prompt > summary::-webkit-details-marker { display: none; }
+details.prompt > summary::before { content: "▸"; color: var(--faint); transition: transform 0.15s ease; }
+details.prompt[open] > summary::before { transform: rotate(90deg); }
+details.prompt > summary:hover { color: var(--text-2); }
+details.prompt > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Lead cards ────────────────────────────────────────────── */
+
+.lead {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.16s ease;
+}
+.lead.is-approved { border-color: rgba(111, 191, 139, 0.4); }
+.lead.is-rejected { opacity: 0.5; }
+.lead.is-pushed { border-color: rgba(255, 222, 0, 0.3); }
+
+.lead-top {
+  display: flex;
+  gap: 16px;
+  padding: 18px 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.lead-id { min-width: 0; flex: 1 1 260px; }
+.lead-name { font-size: 16px; font-weight: 500; margin-bottom: 2px; }
+.lead-meta { font-size: 13px; color: var(--muted); }
+.lead-mail { font-family: var(--mono); font-size: 11.5px; color: var(--faint); margin-top: 5px; }
+
+.score { text-align: right; flex: none; }
+.score .n {
+  font-family: var(--display);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.score .l {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.opener-wrap { padding: 0 20px 18px; }
+.opener {
+  background: var(--surface-2);
+  border-left: 2px solid var(--purple-line);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 15px 17px;
+}
+/* The one place the serif appears: this sentence is the only string
+   a stranger actually reads. Everything else is chrome. */
+.opener textarea {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.5;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--text);
+  min-height: 54px;
+}
+.opener textarea:focus { box-shadow: none; }
+.opener textarea { resize: none; overflow: hidden; }
+.opener-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: var(--faint);
+}
+.opener-foot .verdict { flex: 1 1 240px; min-width: 0; }
+
+.lead-actions {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 13px 20px;
+  border-top: 1px solid var(--line-soft);
+  background: rgba(10, 10, 10, 0.4);
+  flex-wrap: wrap;
+}
+.lead-actions .spacer { margin-left: auto; }
+
+details.research { border-top: 1px solid var(--line-soft); }
+details.research > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 20px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+details.research > summary::-webkit-details-marker { display: none; }
+details.research > summary::before { content: "▸"; color: var(--faint); transition: transform 0.15s ease; }
+details.research[open] > summary::before { transform: rotate(90deg); }
+details.research > summary:hover { color: var(--text-2); }
+details.research > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.research-body {
+  padding: 0 20px 18px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.research-body h4 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin: 0 0 6px;
+}
+.research-body p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.55;
+  max-height: 130px;
+  overflow-y: auto;
+}
+
+/* ── Sequence steps ────────────────────────────────────────── */
+
+.step {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.step-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.step-day {
+  font-family: var(--display);
+  font-size: 19px;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+.var {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--accent);
+  background: rgba(255, 222, 0, 0.09);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* ── Tables ────────────────────────────────────────────────── */
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; }
+thead th {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  text-align: left;
+  font-weight: 400;
+  padding: 11px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13.5px;
+  color: var(--text-2);
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: var(--surface); }
+td.mono, th.mono { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+/* ── Notices ───────────────────────────────────────────────── */
+
+.notice {
+  border-radius: var(--radius-sm);
+  padding: 13px 15px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  border: 1px solid;
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+.notice b { font-weight: 500; }
+.notice.warn { background: var(--warn-bg); border-color: rgba(217, 160, 61, 0.32); color: #E8C48A; }
+.notice.info { background: var(--surface-2); border-color: var(--line); color: var(--text-2); }
+.notice.gate { background: var(--ok-bg); border-color: rgba(111, 191, 139, 0.3); color: #A9D9BC; }
+.notice .mark { font-family: var(--mono); font-size: 12px; flex: none; opacity: 0.8; }
+
+/* ── Toast ─────────────────────────────────────────────────── */
+
+.toast {
+  position: fixed;
+  bottom: 26px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  color: var(--text);
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 60;
+  max-width: min(520px, 90vw);
+}
+.toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+
+hr.rule { border: 0; border-top: 1px solid var(--line-soft); margin: 4px 0; }
+
+.section-title {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin: 26px 0 12px;
+}
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .rail {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 12px 16px;
+  }
+  .rail-foot { display: none; }
+  .nav-group { flex-direction: row; }
+  .nav-label { display: none; }
+  .nav-item[aria-current="true"]::before { display: none; }
+  .view { padding: 22px 18px 70px; }
+  h1 { font-size: 32px; }
+}
+
+/* ── Additions the live dashboard needs that the design prototype did not ─────────── */
+
+.combo { position: relative; }
+.combo input { padding-right: 32px; }
+
+.empty {
+  color: var(--faint);
+  font-size: 14px;
+  text-align: center;
+  padding: 46px 20px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+.chip-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+.chip-add input {
+  width: 130px;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 20px 0 0 20px;
+  border-right: 0;
+}
+.chip-add button {
+  border-radius: 0 20px 20px 0;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: pointer;
+  padding: 5px 11px;
+  font-family: var(--sans);
+  font-size: 13px;
+}
+.chip-add button:hover { color: var(--text); background: var(--surface-3); }
+
+.chip .x {
+  margin-left: 7px;
+  opacity: 0.5;
+  font-size: 15px;
+  line-height: 1;
+}
+.chip:hover .x { opacity: 1; }
+
+.saving { opacity: 0.55; pointer-events: none; }
+
+.banner {
+  border-radius: var(--radius-sm);
+  padding: 12px 15px;
+  font-size: 13.5px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(212, 99, 95, 0.35);
+  background: var(--bad-bg);
+  color: #E9A9A6;
+}
+
+.toast.bad { border-left-color: var(--bad); }
+.toast.ok  { border-left-color: var(--ok); }
+
+.spin {
+  width: 12px; height: 12px;
+  border: 2px solid rgba(255, 222, 0, 0.25);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation-duration: 2.4s; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══════════ RAIL ══════════ -->
+  <aside class="rail">
+    <div class="brand">
+      <img src="data:image/png;base64,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" alt="Bombay Media">
+      <div>
+        <div class="brand-name">OUTREACH AGENT</div>
+        <div class="brand-sub">Bombay Media</div>
+      </div>
+    </div>
+
+    <nav class="nav-group" aria-label="Operate">
+      <div class="nav-label">Operate</div>
+      <button class="nav-item" data-view="console" aria-current="true">Run console</button>
+      <button class="nav-item" data-view="review">Review queue <span class="nav-badge is-quiet" id="navReview">0</span></button>
+      <button class="nav-item" data-view="campaign">Campaign</button>
+    </nav>
+
+    <nav class="nav-group" aria-label="Configure">
+      <div class="nav-label">Configure</div>
+      <button class="nav-item" data-view="agents">Agents <span class="nav-badge is-quiet">3</span></button>
+      <button class="nav-item" data-view="targeting">Targeting</button>
+      <button class="nav-item" data-view="research">Research</button>
+    </nav>
+
+    <nav class="nav-group" aria-label="Records">
+      <div class="nav-label">Records</div>
+      <button class="nav-item" data-view="ledger">Contact ledger</button>
+    </nav>
+
+    <div class="rail-foot">
+      <div class="k"><span>Mailboxes</span>
+        <b><button class="btn btn-ghost btn-sm" id="mailboxBtn" style="padding: 2px 9px; font-size: 11.5px;">Check</button></b>
+      </div>
+      <div class="k"><span>Settings</span><b id="railSettings">defaults</b></div>
+      <div class="k"><span>Last run</span><b id="railLastRun">—</b></div>
+    </div>
+  </aside>
+
+  <main>
+    <!-- ══════════ TOP STRIP ══════════ -->
+    <div class="topbar">
+      <span class="gate"><span class="dot"></span>Send gate armed</span>
+
+      <div class="mode-switch" role="group" aria-label="Run mode">
+        <button id="modeTest" aria-pressed="true">Test</button>
+        <button id="modeLive" class="live" aria-pressed="false">Live</button>
+      </div>
+
+      <span class="pill neutral" id="modeNote">Sample data · no API calls · no cost</span>
+      <span class="topbar-spacer"></span>
+      <span class="pill neutral" id="jobPill" style="display: none;"></span>
+    </div>
+
+    <!-- ══════════ 1. RUN CONSOLE ══════════ -->
+    <section class="view is-active" id="view-console">
+      <div class="view-head">
+        <div class="eyebrow">Operate</div>
+        <h1>Run console</h1>
+        <p>Set the batch size, confirm what it will cost, and run the pipeline. Research and
+           drafting are automated; deciding who gets emailed is not — every lead stops in the
+           review queue.</p>
+      </div>
+
+      <div id="runError"></div>
+
+      <div class="grid two">
+        <div class="card">
+          <div class="card-head">
+            <h2>Start a batch</h2>
+            <span class="hint">Stages 1–3</span>
+          </div>
+
+          <div class="stack">
+            <div class="row">
+              <div class="field" style="flex: 0 0 130px;">
+                <label for="leadCount">Leads to pull</label>
+                <input type="number" id="leadCount" class="mono" value="5" min="1" max="500">
+              </div>
+              <div class="field" style="flex: 1 1 200px;">
+                <span class="label">Matching pool in Apollo</span>
+                <div class="help" id="poolNote" style="padding-top: 9px;">
+                  Not checked yet — the Targeting screen can count it for free.
+                </div>
+              </div>
+            </div>
+
+            <hr class="rule">
+
+            <div class="stack" style="gap: 10px;">
+              <div class="label">Stages to run</div>
+              <label class="check"><input type="checkbox" checked disabled>
+                <span>Find in Apollo <span class="sub">Search is free; enrichment costs ~1 credit per lead</span></span>
+              </label>
+              <label class="check"><input type="checkbox" id="optResearch" checked>
+                <span>Research with Apify <span class="sub">LinkedIn profile, recent posts, and their website</span></span>
+              </label>
+              <label class="check"><input type="checkbox" id="optPersonalize" checked>
+                <span>Qualify, write and critique <span class="sub">All three agent roles, in sequence</span></span>
+              </label>
+              <div class="help" id="skipNote" style="display: none; color: var(--warn);">
+                With research off there is nothing to judge or reference, so the models are
+                skipped too. Leads arrive with the fallback line for you to write over.
+              </div>
+            </div>
+
+            <hr class="rule">
+
+            <div class="metric-row">
+              <div class="metric"><div class="n small accent" id="costApollo">0</div><div class="l">Apollo credits</div></div>
+              <div class="metric"><div class="n small" id="costApify">$0.00</div><div class="l">Apify research</div></div>
+              <div class="metric"><div class="n small" id="costAI">$0.00</div><div class="l">Model spend</div></div>
+              <div class="metric"><div class="n small" id="costTotal">$0.00</div><div class="l">Estimated total</div></div>
+            </div>
+
+            <div class="notice info" id="costNote">
+              <span class="mark">≈</span>
+              <span>Test mode spends nothing. Switch to <b>Live</b> in the top bar to run against
+                    the real APIs.</span>
+            </div>
+
+            <div class="row">
+              <button class="btn btn-primary" id="runBtn">Run pipeline</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Progress</h2>
+            <span class="hint" id="stageHint">Idle</span>
+          </div>
+
+          <div class="stages" id="stageRail">
+            <div class="stage" data-stage="scrape">
+              <div class="stage-num">01</div>
+              <div class="stage-name"><b>Find</b><span>Apollo search, then enrichment</span></div>
+              <div class="stage-state">Idle</div>
+            </div>
+            <div class="stage" data-stage="verify">
+              <div class="stage-num">02</div>
+              <div class="stage-name"><b>Research</b><span>Profile, posts and website · 20–40s per lead</span></div>
+              <div class="stage-state">Idle</div>
+            </div>
+            <div class="stage" data-stage="qualify">
+              <div class="stage-num">03</div>
+              <div class="stage-name"><b>Qualify</b><span>Is this a real coach with a paid offer?</span></div>
+              <div class="stage-state">Idle</div>
+            </div>
+            <div class="stage" data-stage="write">
+              <div class="stage-num">04</div>
+              <div class="stage-name"><b>Write</b><span>One opening sentence per lead</span></div>
+              <div class="stage-state">Idle</div>
+            </div>
+            <div class="stage" data-stage="critique">
+              <div class="stage-num">05</div>
+              <div class="stage-name"><b>Critique</b><span>Checked for invented facts and filler</span></div>
+              <div class="stage-state">Idle</div>
+            </div>
+          </div>
+
+          <hr class="rule" style="margin: 18px 0 16px;">
+          <div id="runMessage" class="help" style="min-height: 20px;"></div>
+        </div>
+      </div>
+
+      <div class="section-title">Recent runs</div>
+      <div id="runsWrap"></div>
+    </section>
+
+    <!-- ══════════ 2. REVIEW QUEUE ══════════ -->
+    <section class="view" id="view-review">
+      <div class="view-head">
+        <div class="eyebrow">Operate</div>
+        <h1>Review queue</h1>
+        <p>Every opener sits next to the research it came from, so you can check it rather than
+           trust it. Edit anything that misses, tick what you want contacted, and push.</p>
+      </div>
+
+      <div class="card" style="margin-bottom: 18px;">
+        <div class="row" style="align-items: center;">
+          <div class="metric-row" style="flex: 1 1 380px;">
+            <div class="metric"><div class="n" id="mTotal">0</div><div class="l">In batch</div></div>
+            <div class="metric"><div class="n ok" id="mApproved">0</div><div class="l">Approved</div></div>
+            <div class="metric"><div class="n small" id="mPushed">0</div><div class="l">Already pushed</div></div>
+            <div class="metric"><div class="n small" id="mAvgScore">—</div><div class="l">Avg fit score</div></div>
+          </div>
+          <div class="row" style="margin-left: auto;">
+            <button class="btn btn-ghost btn-sm" id="approveAll">Approve all remaining</button>
+            <button class="btn btn-primary" id="pushBtn" disabled>Nothing approved yet</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="pushResult"></div>
+      <div class="stack" id="leadList"></div>
+    </section>
+
+    <!-- ══════════ 3. CAMPAIGN ══════════ -->
+    <section class="view" id="view-campaign">
+      <div class="view-head">
+        <div class="eyebrow">Operate</div>
+        <h1>Campaign</h1>
+        <p>The sequence approved leads land in. It is created in Instantly as a draft — you press
+           Launch there yourself.</p>
+      </div>
+
+      <div class="notice gate" style="margin-bottom: 20px;">
+        <span class="mark">◆</span>
+        <span><b>Nothing sends from this screen.</b> There is no code path in this project that calls
+              Instantly's activate endpoint. The campaign is created paused, then read back to confirm
+              it is still a draft before any lead is uploaded.</span>
+      </div>
+
+      <div class="grid two" style="margin-bottom: 18px;">
+        <div class="card">
+          <div class="card-head"><h2>Delivery settings</h2></div>
+          <div class="stack">
+            <div class="field">
+              <label for="campPrefix">Campaign name</label>
+              <input type="text" id="campPrefix" class="mono">
+              <div class="help">A date and time is appended automatically, so two runs never
+                   collide and this is never confused with your other campaigns.</div>
+            </div>
+            <div class="row">
+              <div class="field" style="flex: 0 0 120px;">
+                <label for="dailyCap">Daily cap</label>
+                <input type="number" id="dailyCap" class="mono" min="1" max="500">
+              </div>
+              <div class="field" style="flex: 1 1 190px;">
+                <label for="tz">Sending timezone</label>
+                <select id="tz" class="mono">
+                  <option>America/Detroit</option>
+                  <option>America/Chicago</option>
+                  <option>America/Denver</option>
+                  <option>America/Los_Angeles</option>
+                  <option>Europe/London</option>
+                  <option>Asia/Dubai</option>
+                  <option>Australia/Sydney</option>
+                </select>
+                <div class="help">Instantly accepts a fixed list only. "America/New_York" is
+                     not on it — Detroit is the Eastern-time entry that is.</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field" style="flex: 1 1 120px;">
+                <label for="sendFrom">Send from</label>
+                <input type="text" id="sendFrom" class="mono" placeholder="09:00">
+              </div>
+              <div class="field" style="flex: 1 1 120px;">
+                <label for="sendTo">Send until</label>
+                <input type="text" id="sendTo" class="mono" placeholder="17:00">
+              </div>
+            </div>
+            <hr class="rule">
+            <label class="check"><input type="checkbox" id="stopOnReply">
+              <span>Stop on reply <span class="sub">A lead who replies is pulled out immediately</span></span></label>
+            <label class="check"><input type="checkbox" id="unsubHeader">
+              <span>Insert unsubscribe header <span class="sub">Plus a visible "Reply STOP" line in every step</span></span></label>
+            <label class="check"><input type="checkbox" checked disabled>
+              <span>Skip anyone already in the workspace <span class="sub">Locked on — this is what protects leads owned by your other campaigns</span></span></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Duplicate protection</h2><span class="hint">Three layers</span></div>
+          <div class="stack">
+            <div class="stage" style="padding: 9px 0;">
+              <div class="stage-num" style="border-color: rgba(111,191,139,0.4); color: var(--ok);">01</div>
+              <div class="stage-name"><b>Contact ledger</b><span>Everyone ever pushed or rejected — filtered before research</span></div>
+              <div class="stage-state" style="color: var(--ok);">On</div>
+            </div>
+            <div class="stage" style="padding: 9px 0;">
+              <div class="stage-num" style="border-color: rgba(111,191,139,0.4); color: var(--ok);">02</div>
+              <div class="stage-name"><b>Instantly workspace check</b><span>Instantly itself refuses a lead that exists anywhere else</span></div>
+              <div class="stage-state" style="color: var(--ok);">On</div>
+            </div>
+            <div class="stage" style="padding: 9px 0;">
+              <div class="stage-num" style="border-color: rgba(111,191,139,0.4); color: var(--ok);">03</div>
+              <div class="stage-name"><b>Per-lead campaign lock</b><span>Pushed leads are locked here and filtered from later pushes</span></div>
+              <div class="stage-state" style="color: var(--ok);">On</div>
+            </div>
+            <div class="notice info">
+              <span class="mark">i</span>
+              <span>They cover different failures: losing the local file, a second campaign, and a
+                    re-run mid-review. Keep all three.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Sequence</div>
+      <div class="stack" id="sequenceList"></div>
+
+      <div class="row" style="margin-top: 16px;">
+        <button class="btn btn-primary" id="saveCampaign">Save campaign settings</button>
+        <button class="btn btn-ghost" id="resetCampaign">Restore defaults</button>
+      </div>
+
+      <div class="notice warn" style="margin-top: 16px;">
+        <span class="mark">!</span>
+        <span><b>This copy is still a placeholder.</b> It was written to make the pipeline runnable
+              end to end, not to sound like you. Rewrite it before the first batch larger than five —
+              voice fidelity matters more than clever copy.</span>
+      </div>
+    </section>
+
+    <!-- ══════════ 4. AGENTS ══════════ -->
+    <section class="view" id="view-agents">
+      <div class="view-head">
+        <div class="eyebrow">Configure</div>
+        <h1>Agents</h1>
+        <p>Three roles, three different vendors, one job each. The critic is deliberately from a
+           different model family than the writer — a model reviewing its own work shares its own
+           blind spots.</p>
+      </div>
+
+      <datalist id="modelList">
+        <option value="openai/gpt-5.6-luna" label="$0.20 / $1.20 per 1M"></option>
+        <option value="anthropic/claude-sonnet-5" label="$2.00 / $10.00 per 1M"></option>
+        <option value="anthropic/claude-haiku-4.5" label="$1.00 / $5.00 per 1M"></option>
+        <option value="google/gemini-3.7-flash" label="$0.375 / $1.875 per 1M"></option>
+        <option value="nvidia/nemotron-3.5-lightning" label="$0.04 / $0.20 per 1M"></option>
+      </datalist>
+
+      <div class="stack" id="agentList"></div>
+
+      <div class="row" style="margin-top: 16px;">
+        <button class="btn btn-primary" id="saveAgents">Save agent settings</button>
+        <button class="btn btn-ghost" id="resetAgents">Restore defaults</button>
+      </div>
+
+      <div class="notice info" style="margin-top: 16px;">
+        <span class="mark">≈</span>
+        <span>All three roles at the default settings cost roughly <b>$8.60 per 1,000 leads</b>.
+              Switching the qualifier to Nemotron and the writer to Haiku brings that to about
+              <b>$4.10</b>.</span>
+      </div>
+    </section>
+
+    <!-- ══════════ 5. TARGETING ══════════ -->
+    <section class="view" id="view-targeting">
+      <div class="view-head">
+        <div class="eyebrow">Configure</div>
+        <h1>Targeting</h1>
+        <p>Apollo filters on job title, company size and location — it has no field for coaching
+           revenue or Instagram following. So this is a proxy that gets you close, and the research
+           stage is where fit is actually confirmed.</p>
+      </div>
+
+      <div class="grid two">
+        <div class="card">
+          <div class="card-head"><h2>Who to look for</h2></div>
+          <div class="stack">
+            <div class="field">
+              <span class="label">Job titles</span>
+              <div class="chips" id="chips-titles"></div>
+            </div>
+            <div class="field">
+              <span class="label">Seniority</span>
+              <div class="chips" id="chips-seniorities"></div>
+            </div>
+            <div class="field">
+              <span class="label">Geography</span>
+              <div class="chips" id="chips-locations"></div>
+            </div>
+            <div class="row">
+              <div class="field" style="flex: 1 1 170px;">
+                <label for="empRange">Company size</label>
+                <select id="empRange">
+                  <option value="1,10">1–10 employees</option>
+                  <option value="1,20">1–20 employees</option>
+                  <option value="11,50">11–50 employees</option>
+                  <option value="1,50">1–50 employees</option>
+                </select>
+              </div>
+              <div class="field" style="flex: 1 1 170px;">
+                <label for="emailStatus">Email status</label>
+                <select id="emailStatus">
+                  <option value="verified">Verified only</option>
+                  <option value="verified,likely">Verified or likely</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <div class="card-head"><h2>Keyword</h2><span class="hint">The one that bites</span></div>
+            <div class="stack">
+              <div class="field">
+                <label for="kw">Search keyword</label>
+                <input type="text" id="kw" class="mono">
+              </div>
+              <div class="notice warn" id="kwWarn" style="display: none;">
+                <span class="mark">!</span>
+                <span><b>Use one word.</b> Apollo matches this as a whole phrase, not a bag of words.
+                      Multi-word values return zero results, which looks exactly like "no leads today"
+                      rather than a bug.</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Keyword</th><th class="mono">People matched</th></tr></thead>
+                  <tbody>
+                    <tr><td class="mono">(none)</td><td class="mono">883,985</td></tr>
+                    <tr><td class="mono">coach</td><td class="mono">6,113</td></tr>
+                    <tr><td class="mono" style="color: var(--accent);">coaching</td><td class="mono" style="color: var(--accent);">3,297</td></tr>
+                    <tr><td class="mono">online coaching</td><td class="mono">16</td></tr>
+                    <tr><td class="mono">coaching course program</td><td class="mono">0</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="help">Measured against the live API on 20 August 2026.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h2>What this proxy misses</h2></div>
+            <div class="help" style="font-size: 13.5px; color: var(--text-2);">
+              The things that actually define your ICP — revenue, program price, audience size,
+              ad budget — are not filterable in Apollo. It only knows job title, industry,
+              company size and location. Those deeper signals are judged later by the qualifier,
+              from their LinkedIn bio, recent posts and website.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 18px;">
+        <button class="btn btn-primary" id="saveTargeting">Save targeting</button>
+        <button class="btn btn-ghost" id="resetTargeting">Restore defaults</button>
+        <button class="btn btn-ghost" id="estimateBtn">Count the pool (free)</button>
+        <span class="pill neutral" id="poolPill">Not checked yet</span>
+      </div>
+    </section>
+
+    <!-- ══════════ 6. RESEARCH ══════════ -->
+    <section class="view" id="view-research">
+      <div class="view-head">
+        <div class="eyebrow">Configure</div>
+        <h1>Research</h1>
+        <p>Three scrapers per lead. This is the slow stage — roughly 20–40 seconds per lead, five at a
+           time — and the posts are what make an opener sound like a human actually looked.</p>
+      </div>
+
+      <div class="stack">
+        <div class="card">
+          <div class="card-head"><h2>Sources</h2><span class="hint">Priced per event</span></div>
+          <div class="stack">
+            <div class="row" style="align-items: flex-start;">
+              <div class="field" style="flex: 2 1 320px;">
+                <label for="actLinkedin">LinkedIn profile</label>
+                <input type="text" id="actLinkedin" class="mono">
+                <div class="help">Confirms they're real, gets their bio and follower count, and finds
+                     their email when Apollo couldn't. <b>Required.</b></div>
+              </div>
+              <div class="field" style="flex: 0 0 160px;">
+                <span class="label">Cost</span>
+                <div class="help" style="padding-top: 9px; font-family: var(--mono); color: var(--text-2);">
+                  $4 / 1k<br><span style="color: var(--faint);">$10 / 1k with email hunt</span>
+                </div>
+              </div>
+            </div>
+
+            <hr class="rule">
+
+            <div class="row" style="align-items: flex-start;">
+              <div class="field" style="flex: 2 1 320px;">
+                <label for="actPosts">Recent posts</label>
+                <input type="text" id="actPosts" class="mono">
+                <label class="check" style="margin-top: 9px;">
+                  <input type="checkbox" id="postsOn">
+                  <span>Pull their recent posts
+                    <span class="sub">Turning this off is cheaper and makes openers noticeably worse</span></span>
+                </label>
+              </div>
+              <div class="field" style="flex: 0 0 160px;">
+                <label for="maxPosts">Max posts</label>
+                <input type="number" id="maxPosts" class="mono" min="1" max="20">
+              </div>
+            </div>
+
+            <hr class="rule">
+
+            <div class="row" style="align-items: flex-start;">
+              <div class="field" style="flex: 2 1 320px;">
+                <label for="actSite">Their website</label>
+                <input type="text" id="actSite" class="mono">
+                <div class="help">Crawls their site to find what they actually sell.</div>
+              </div>
+              <div class="field" style="flex: 0 0 160px;">
+                <label for="sitePages">Pages</label>
+                <input type="number" id="sitePages" class="mono" min="1" max="10">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <div class="card-head"><h2>Thresholds</h2></div>
+            <div class="row">
+              <div class="field" style="flex: 1 1 160px;">
+                <label for="minChars">Minimum research found</label>
+                <input type="number" id="minChars" class="mono" min="0" max="5000">
+                <div class="help">Characters. Below this there is nothing to personalise from, so the
+                     lead is dropped rather than guessed at.</div>
+              </div>
+              <div class="field" style="flex: 1 1 160px;">
+                <label for="conc">Leads at once</label>
+                <input type="number" id="conc" class="mono" min="1" max="20">
+                <div class="help">Higher burns through rate limits and the connection pool. Five is
+                     plenty.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h2>Drop rate</h2><span class="hint">This batch</span></div>
+            <div class="stack">
+              <div class="metric-row">
+                <div class="metric"><div class="n" id="dropPct">—</div><div class="l">Dropped</div></div>
+                <div class="metric"><div class="n small" id="dropKept">—</div><div class="l">Kept</div></div>
+                <div class="metric"><div class="n small" id="dropTotal">—</div><div class="l">On record</div></div>
+              </div>
+              <div class="notice info">
+                <span class="mark">i</span>
+                <span>Above 50% and the targeting proxy is probably too loose — tune it before
+                      increasing volume rather than after.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="btn btn-primary" id="saveResearch">Save research settings</button>
+          <button class="btn btn-ghost" id="resetResearch">Restore defaults</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 7. LEDGER ══════════ -->
+    <section class="view" id="view-ledger">
+      <div class="view-head">
+        <div class="eyebrow">Records</div>
+        <h1>Contact ledger</h1>
+        <p>Permanent, append-only, and consulted before a single credit is spent. If someone is in
+           here, no future run researches them and no campaign emails them.</p>
+      </div>
+
+      <div class="card" style="margin-bottom: 18px;">
+        <div class="row" style="align-items: center;">
+          <div class="metric-row" style="flex: 1 1 420px;">
+            <div class="metric"><div class="n" id="ledTotal">0</div><div class="l">People on record</div></div>
+            <div class="metric"><div class="n small ok" id="ledPushed">0</div><div class="l">Pushed</div></div>
+            <div class="metric"><div class="n small" id="ledRejected" style="color: var(--bad);">0</div><div class="l">Rejected by agent</div></div>
+            <div class="metric"><div class="n small" id="ledFailed" style="color: var(--warn);">0</div><div class="l">Failed research</div></div>
+          </div>
+          <div class="field" style="margin-left: auto; flex: 1 1 240px; max-width: 300px;">
+            <label for="ledgerSearch">Find someone</label>
+            <input type="text" id="ledgerSearch" placeholder="Name, company or email">
+          </div>
+        </div>
+      </div>
+
+      <div id="ledgerWrap"></div>
+
+      <div class="notice info" style="margin-top: 16px;">
+        <span class="mark">i</span>
+        <span>Removing someone from the ledger makes them eligible to be contacted again. There is no
+              button for it here on purpose — it is a deliberate edit to the file, not a click.</span>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  const $  = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll(s));
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  let mock = true;          // Test mode until explicitly switched
+  let CONFIG = null;        // last-loaded settings
+  let LEADS = [];
+  let polling = null;
+
+  /* ── Toast ─────────────────────────────────────────────────── */
+  let toastTimer;
+  function toast(msg, kind) {
+    const el = $("#toast");
+    el.textContent = msg;
+    el.className = "toast is-visible" + (kind ? " " + kind : "");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("is-visible"), 4200);
+  }
+
+  /* ── Fetch helper: every failure surfaces the server's own reason ─── */
+  async function api(path, options) {
+    const res = await fetch(path, options);
+    let body = null;
+    try { body = await res.json(); } catch (e) { /* empty or non-JSON body */ }
+    if (!res.ok) {
+      const detail = (body && (body.detail || body.message)) || res.statusText;
+      throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+    }
+    return body;
+  }
+  const q = (path) => path + (path.indexOf("?") === -1 ? "?" : "&") + "mock=" + mock;
+
+  function saveJSON(path, values) {
+    return api(path, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ values: values })
+    });
+  }
+
+  /* ── Navigation ────────────────────────────────────────────── */
+  const LOADERS = {
+    console: () => Promise.all([loadRuns(), refreshPoolNote()]),
+    review: loadLeads,
+    campaign: () => renderCampaign(CONFIG.campaign),
+    agents: () => Promise.all([renderAgents(CONFIG.agents), loadStats()]),
+    targeting: () => renderTargeting(CONFIG.targeting),
+    research: () => Promise.all([renderResearch(CONFIG.research), loadDropRate()]),
+    ledger: () => loadLedger($("#ledgerSearch").value)
+  };
+
+  $$(".nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      $$(".nav-item").forEach((b) => b.setAttribute("aria-current", "false"));
+      btn.setAttribute("aria-current", "true");
+      $$(".view").forEach((v) => v.classList.remove("is-active"));
+      $("#view-" + btn.dataset.view).classList.add("is-active");
+      window.scrollTo(0, 0);
+      const load = LOADERS[btn.dataset.view];
+      if (load) Promise.resolve(load()).catch((e) => toast(e.message, "bad"));
+    });
+  });
+
+  /* ── Mode ──────────────────────────────────────────────────── */
+  function setMode(isLive) {
+    mock = !isLive;
+    $("#modeTest").setAttribute("aria-pressed", String(!isLive));
+    $("#modeLive").setAttribute("aria-pressed", String(isLive));
+    const note = $("#modeNote");
+    note.textContent = isLive
+      ? "Real APIs · spends credits · writes to the ledger"
+      : "Sample data · no API calls · no cost";
+    note.className = isLive ? "pill bad" : "pill neutral";
+    $("#costNote").innerHTML = isLive
+      ? '<span class="mark">!</span><span>Live mode. This run will spend Apollo credits and ' +
+        'Apify balance. You will be asked to confirm before it starts.</span>'
+      : '<span class="mark">≈</span><span>Test mode spends nothing. Switch to <b>Live</b> in the ' +
+        'top bar to run against the real APIs.</span>';
+    $("#costNote").className = isLive ? "notice warn" : "notice info";
+    updateCost();
+    refreshCurrentView();
+  }
+  $("#modeTest").addEventListener("click", () => setMode(false));
+  $("#modeLive").addEventListener("click", () => setMode(true));
+
+  function refreshCurrentView() {
+    const active = $(".nav-item[aria-current='true']");
+    const load = active && LOADERS[active.dataset.view];
+    if (load) Promise.resolve(load()).catch((e) => toast(e.message, "bad"));
+  }
+
+  /* ── Cost estimate ─────────────────────────────────────────── */
+  function updateCost() {
+    const n = Math.max(0, parseInt($("#leadCount").value, 10) || 0);
+    const doResearch = $("#optResearch").checked;
+    const doPersonalize = $("#optPersonalize").checked && doResearch;
+    const withPosts = CONFIG ? CONFIG.research.posts_enabled : true;
+
+    const apollo = mock ? 0 : n;
+    const apify = !mock && doResearch ? n * (withPosts ? 0.015 : 0.006) : 0;
+    const ai = !mock && doPersonalize ? n * 0.0086 : 0;
+
+    $("#costApollo").textContent = apollo;
+    $("#costApify").textContent = "$" + apify.toFixed(2);
+    $("#costAI").textContent = "$" + ai.toFixed(2);
+    $("#costTotal").textContent = "$" + (apify + ai).toFixed(2);
+  }
+
+  function syncStageToggles() {
+    const researchOn = $("#optResearch").checked;
+    const p = $("#optPersonalize");
+    p.disabled = !researchOn;
+    if (!researchOn) p.checked = false;
+    $("#skipNote").style.display = researchOn ? "none" : "block";
+    updateCost();
+  }
+  $("#leadCount").addEventListener("input", updateCost);
+  $("#optResearch").addEventListener("change", syncStageToggles);
+  $("#optPersonalize").addEventListener("change", updateCost);
+
+  /* ── Running ───────────────────────────────────────────────── */
+  const STAGE_ORDER = ["scrape", "verify", "qualify", "write", "critique"];
+  const STAGE_LABELS = { scrape: "Searching", verify: "Researching", qualify: "Judging",
+                         write: "Writing", critique: "Checking" };
+  const JOB_STAGE_TO_RAIL = { scrape: "scrape", verify: "verify", personalize: "qualify" };
+
+  function paintStages(state) {
+    const done = state.stages_done || [];
+    const current = JOB_STAGE_TO_RAIL[state.stage] || null;
+    STAGE_ORDER.forEach((name) => {
+      const el = $('.stage[data-stage="' + name + '"]');
+      const label = $(".stage-state", el);
+      if (done.indexOf(name) !== -1) {
+        el.className = "stage is-done"; label.textContent = "Done";
+      } else if (state.running && name === current) {
+        el.className = "stage is-active"; label.textContent = STAGE_LABELS[name];
+      } else if (state.running && current && STAGE_ORDER.indexOf(name) < STAGE_ORDER.indexOf(current)) {
+        el.className = "stage is-done"; label.textContent = "Done";
+      } else {
+        el.className = "stage"; label.textContent = "Idle";
+      }
+    });
+    if (state.stage === "personalize" && state.running) {
+      ["write", "critique"].forEach((n) => {
+        const el = $('.stage[data-stage="' + n + '"]');
+        el.className = "stage is-active";
+        $(".stage-state", el).textContent = STAGE_LABELS[n];
+      });
+    }
+  }
+
+  async function pollStatus() {
+    let state;
+    try { state = await api("/api/run-status"); }
+    catch (e) { return; }
+
+    paintStages(state);
+    const pill = $("#jobPill");
+    const btn = $("#runBtn");
+
+    if (state.running) {
+      $("#stageHint").textContent = (STAGE_LABELS[JOB_STAGE_TO_RAIL[state.stage]] || "Working") + "…";
+      $("#runMessage").textContent = state.message || "";
+      pill.style.display = "";
+      pill.className = "pill brand";
+      pill.innerHTML = '<span class="spin"></span> Running';
+      btn.disabled = true;
+      btn.textContent = "Running…";
+      return;
+    }
+
+    // Finished (or never started)
+    btn.disabled = false;
+    btn.textContent = "Run pipeline";
+    pill.style.display = "none";
+    $("#stageHint").textContent = state.stage === "error" ? "Failed" : (state.stage === "done" ? "Finished" : "Idle");
+    $("#runMessage").textContent = state.message || "";
+    $("#runError").innerHTML = state.error
+      ? '<div class="banner"><b>The run stopped.</b> ' + esc(state.error) + "</div>"
+      : "";
+
+    if (polling) {
+      clearInterval(polling);
+      polling = null;
+      if (!state.error) toast(state.message || "Run finished.", "ok");
+      await Promise.all([loadLeads(), loadRuns()]).catch(() => {});
+      updateReviewBadge();
+    }
+  }
+
+  $("#runBtn").addEventListener("click", async () => {
+    const n = Math.max(1, parseInt($("#leadCount").value, 10) || 5);
+    if (!mock) {
+      const ok = window.confirm(
+        "Live run: " + n + " leads.\n\n" +
+        "This spends about " + n + " Apollo credits and $" +
+        (n * 0.0236).toFixed(2) + " of Apify and model budget.\n\n" +
+        "Nothing is sent — leads stop in the review queue. Continue?"
+      );
+      if (!ok) return;
+    }
+    $("#runError").innerHTML = "";
+    try {
+      await api("/api/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          limit: n, mock: mock,
+          research: $("#optResearch").checked,
+          personalize: $("#optPersonalize").checked
+        })
+      });
+      if (polling) clearInterval(polling);
+      polling = setInterval(pollStatus, 1200);
+      pollStatus();
+    } catch (e) {
+      toast(e.message, "bad");
+    }
+  });
+
+  /* ── Run history ───────────────────────────────────────────── */
+  function fmtTime(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    if (isNaN(d)) return String(iso);
+    return d.toLocaleDateString(undefined, { day: "2-digit", month: "short" }) + " " +
+           d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  }
+
+  async function loadRuns() {
+    const data = await api(q("/api/runs"));
+    const runs = data.runs || [];
+    $("#railLastRun").textContent = runs.length ? fmtTime(runs[0].started) : "—";
+    if (!runs.length) {
+      $("#runsWrap").innerHTML = '<div class="empty">No runs yet in ' +
+        (mock ? "test" : "live") + " mode. Start one above.</div>";
+      return;
+    }
+    $("#runsWrap").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      "<th>Started</th><th>Mode</th><th class='mono'>Found</th><th class='mono'>Kept</th>" +
+      "<th class='mono'>Spend</th><th>Outcome</th></tr></thead><tbody>" +
+      runs.slice(0, 12).map((r) => {
+        const failed = /Error|error:/.test(r.outcome || "");
+        return "<tr>" +
+          '<td class="mono">' + esc(fmtTime(r.started)) + "</td>" +
+          "<td>" + (r.mode === "live" ? "Live" : "Test") + "</td>" +
+          '<td class="mono">' + (r.found || 0) + "</td>" +
+          '<td class="mono">' + (r.kept || 0) + "</td>" +
+          '<td class="mono">$' + Number(r.spend || 0).toFixed(3) + "</td>" +
+          '<td><span class="pill ' + (failed ? "bad" : (r.kept ? "ok" : "warn")) + '">' +
+            esc(r.outcome || "—") + "</span></td>" +
+        "</tr>";
+      }).join("") + "</tbody></table></div>";
+  }
+
+  /* ── Review queue ──────────────────────────────────────────── */
+  const SOURCE = {
+    llm:       { cls: "ok",    text: "Written from research" },
+    llm_retry: { cls: "warn",  text: "Rewritten after critique" },
+    fallback:  { cls: "bad",   text: "Fallback line" },
+    edited:    { cls: "brand", text: "Edited by you" }
+  };
+
+  function leadHTML(l) {
+    const src = SOURCE[l.opener_source] || { cls: "neutral", text: l.opener_source || "—" };
+    const cls = "lead" + (l.pushed_to_campaign ? " is-pushed" : (l.approved ? " is-approved" : ""));
+    const research = [
+      ["LinkedIn bio", l.linkedin_bio_snippet],
+      ["Recent posts", l.recent_activity],
+      ["Their website", l.company_summary]
+    ].filter((p) => p[1]);
+
+    return '<article class="' + cls + '" data-key="' + esc(l.key) + '">' +
+      '<div class="lead-top">' +
+        '<div class="lead-id">' +
+          '<div class="lead-name">' + esc(l.name) + "</div>" +
+          '<div class="lead-meta">' + esc([l.title, l.company_name].filter(Boolean).join(" · ")) + "</div>" +
+          '<div class="lead-mail">' + esc(l.email || "no email") + "</div>" +
+        "</div>" +
+        (l.icp_score
+          ? '<div class="score"><div class="n">' + l.icp_score + '</div><div class="l">Fit score</div></div>'
+          : "") +
+      "</div>" +
+
+      '<div class="opener-wrap"><div class="opener">' +
+        '<textarea rows="2" data-opener aria-label="Opening sentence for ' + esc(l.name) + '"' +
+          (l.pushed_to_campaign ? " readonly" : "") + ">" + esc(l.custom_opener) + "</textarea>" +
+        '<div class="opener-foot">' +
+          '<span class="pill ' + src.cls + '" data-src>' + src.text + "</span>" +
+          '<span class="verdict">' + esc(l.critic_verdict || l.icp_reason || "") + "</span>" +
+        "</div>" +
+      "</div></div>" +
+
+      (research.length
+        ? '<details class="research"><summary>The research this came from</summary>' +
+            '<div class="research-body">' +
+              research.map((p) => "<div><h4>" + p[0] + "</h4><p>" + esc(p[1]) + "</p></div>").join("") +
+            "</div>" +
+            (l.research_notes
+              ? '<div style="padding: 0 20px 16px; font-family: var(--mono); font-size: 11px; color: var(--faint);">' +
+                esc(l.research_notes) + "</div>"
+              : "") +
+          "</details>"
+        : "") +
+
+      '<div class="lead-actions">' +
+        (l.pushed_to_campaign
+          ? '<span class="pill brand">In campaign: ' + esc(l.pushed_to_campaign) + "</span>"
+          : '<label class="check"><input type="checkbox" data-approve ' +
+            (l.approved ? "checked" : "") + "><span>Approve for outreach</span></label>") +
+      "</div>" +
+    "</article>";
+  }
+
+  function autoGrow(ta) {
+    ta.style.height = "auto";
+    ta.style.height = ta.scrollHeight + "px";
+  }
+
+  async function loadLeads() {
+    const data = await api(q("/api/leads"));
+    LEADS = data.leads || [];
+    const c = data.counts || {};
+    $("#mTotal").textContent = c.total || 0;
+    $("#mApproved").textContent = c.approved || 0;
+    $("#mPushed").textContent = c.pushed || 0;
+    $("#mAvgScore").textContent = c.avg_score || "—";
+    $("#navReview").textContent = c.total || 0;
+    $("#navReview").className = "nav-badge" + (c.total ? "" : " is-quiet");
+
+    $("#leadList").innerHTML = LEADS.length
+      ? LEADS.map(leadHTML).join("")
+      : '<div class="empty">No leads in this batch yet. Run the pipeline from the ' +
+        "Run console — you are in <b>" + (mock ? "test" : "live") + "</b> mode.</div>";
+    $$("[data-opener]").forEach(autoGrow);
+
+    const btn = $("#pushBtn");
+    btn.disabled = !c.approved;
+    btn.textContent = c.approved
+      ? "Push " + c.approved + " approved to draft campaign"
+      : "Nothing approved yet";
+    $("#approveAll").disabled = !LEADS.some((l) => !l.approved && !l.pushed_to_campaign);
+  }
+
+  function updateReviewBadge() { loadLeads().catch(() => {}); }
+
+  async function patchLead(key, patch) {
+    await api(q("/api/leads/" + encodeURIComponent(key)), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch)
+    });
+  }
+
+  $("#leadList").addEventListener("change", async (e) => {
+    if (!e.target.matches("[data-approve]")) return;
+    const card = e.target.closest(".lead");
+    const key = card.dataset.key;
+    try {
+      await patchLead(key, { approved: e.target.checked });
+      card.classList.toggle("is-approved", e.target.checked);
+      await loadLeads();
+    } catch (err) {
+      e.target.checked = !e.target.checked;
+      toast(err.message, "bad");
+    }
+  });
+
+  // Openers save on blur rather than on every keystroke: one write per edit, not per
+  // character, and the "Edited by you" chip flips as soon as the text differs.
+  let openerDirty = new Set();
+  $("#leadList").addEventListener("input", (e) => {
+    if (!e.target.matches("[data-opener]")) return;
+    autoGrow(e.target);
+    const card = e.target.closest(".lead");
+    openerDirty.add(card.dataset.key);
+    const pill = $("[data-src]", card);
+    pill.className = "pill " + SOURCE.edited.cls;
+    pill.textContent = SOURCE.edited.text;
+  });
+  $("#leadList").addEventListener("focusout", async (e) => {
+    if (!e.target.matches("[data-opener]")) return;
+    const card = e.target.closest(".lead");
+    const key = card.dataset.key;
+    if (!openerDirty.has(key)) return;
+    openerDirty.delete(key);
+    try {
+      await patchLead(key, { custom_opener: e.target.value });
+      toast("Opener saved.", "ok");
+    } catch (err) { toast(err.message, "bad"); }
+  });
+
+  $("#approveAll").addEventListener("click", async () => {
+    const pending = LEADS.filter((l) => !l.approved && !l.pushed_to_campaign);
+    try {
+      for (const l of pending) await patchLead(l.key, { approved: true });
+      await loadLeads();
+      toast(pending.length + " approved. Nothing is sent — the push still creates a draft.", "ok");
+    } catch (err) { toast(err.message, "bad"); }
+  });
+
+  $("#pushBtn").addEventListener("click", async () => {
+    const approved = LEADS.filter((l) => l.approved && !l.pushed_to_campaign).length;
+    if (!window.confirm(
+      "Push " + approved + " lead" + (approved === 1 ? "" : "s") + " into a new " +
+      (mock ? "MOCK " : "") + "Instantly campaign?\n\n" +
+      "The campaign is created as a DRAFT. Nothing sends until you press Launch in Instantly."
+    )) return;
+
+    const btn = $("#pushBtn");
+    btn.disabled = true;
+    btn.textContent = "Pushing…";
+    try {
+      const res = await api(q("/api/push"), { method: "POST" });
+      $("#pushResult").innerHTML =
+        '<div class="notice gate" style="margin-bottom: 16px;"><span class="mark">◆</span><span>' +
+        "<b>" + res.pushed + " lead" + (res.pushed === 1 ? "" : "s") + " uploaded to “" +
+        esc(res.campaign) + "”</b> — status <b>" + esc(res.status) + "</b>. " +
+        "Open Instantly and press Launch when you're ready to send.</span></div>";
+      toast("Pushed to a draft campaign. Nothing has been sent.", "ok");
+      await loadLeads();
+    } catch (err) {
+      toast(err.message, "bad");
+    } finally {
+      await loadLeads();
+    }
+  });
+
+  /* ── Settings: agents ──────────────────────────────────────── */
+  const ROLE_COPY = {
+    qualifier: {
+      title: "QUALIFIER", pill: "Cheap &amp; strict", accent: "var(--purple-line)",
+      job: "Reads the research and decides whether this is genuinely a coach or course creator " +
+           "with a paid offer. Runs on every lead, so cost matters more than brilliance. " +
+           "Rejects stop here, before anything is spent on writing to them."
+    },
+    writer: {
+      title: "WRITER", pill: "Quality first", accent: "var(--accent)",
+      job: "Writes exactly one opening sentence. This is the only output a stranger actually " +
+           "reads, so it gets the best model. Told to reference something specific and real, " +
+           "and never to invent a number."
+    },
+    critic: {
+      title: "CRITIC", pill: "Different family", accent: "var(--purple-line)",
+      job: "Reads the research and the sentence, and judges whether the sentence invented " +
+           "anything or is just generic. Rejections send the writer back with the specific " +
+           "complaint."
+    }
+  };
+
+  function renderAgents(agents) {
+    $("#agentList").innerHTML = ["qualifier", "writer", "critic"].map((role) => {
+      const a = agents[role];
+      const c = ROLE_COPY[role];
+      const extra = role === "writer"
+        ? '<div class="field" style="flex: 0 0 110px;"><label for="' + role + '-retries">Retries</label>' +
+          '<input type="number" class="mono" id="' + role + '-retries" min="0" max="3" value="' +
+          Number(a.retries) + '"></div>'
+        : (role === "qualifier"
+          ? '<div class="field" style="flex: 0 0 130px;"><label for="' + role + '-min">Min score</label>' +
+            '<input type="number" class="mono" id="' + role + '-min" min="0" max="100" value="' +
+            Number(a.min_score) + '"></div>'
+          : "");
+
+      return '<article class="role" style="border-left-color: ' + c.accent + ';" data-role="' + role + '">' +
+        '<div class="role-head"><div style="flex: 1 1 300px;">' +
+          '<div class="role-title">' + c.title + "</div>" +
+          '<div class="role-job">' + c.job + "</div>" +
+        '</div><span class="pill brand">' + c.pill + "</span></div>" +
+
+        '<div class="row">' +
+          '<div class="field" style="flex: 2 1 280px;"><label for="' + role + '-model">Model</label>' +
+            '<input type="text" class="mono" id="' + role + '-model" list="modelList" value="' +
+            esc(a.model) + '" spellcheck="false">' +
+            '<div class="help">Any OpenRouter slug. The listed ones show their price per 1M tokens.</div>' +
+          "</div>" +
+          '<div class="field" style="flex: 0 0 120px;"><label for="' + role + '-tokens">Max tokens</label>' +
+            '<input type="number" class="mono" id="' + role + '-tokens" min="16" max="8000" value="' +
+            Number(a.max_tokens) + '"></div>' +
+          '<div class="field" style="flex: 0 0 130px;"><label for="' + role + '-temp">Temperature</label>' +
+            '<select class="mono" id="' + role + '-temp">' +
+              ['null', '0.0', '0.3', '0.7', '1.0'].map((v) => {
+                const sel = (a.temperature === null && v === 'null') ||
+                            (a.temperature !== null && Number(v) === Number(a.temperature));
+                return '<option value="' + v + '"' + (sel ? " selected" : "") + ">" +
+                       (v === "null" ? "Not sent" : v) + "</option>";
+              }).join("") +
+            "</select></div>" +
+          extra +
+        "</div>" +
+
+        (role === "qualifier"
+          ? '<div class="help" style="color: var(--faint); font-size: 12.5px; margin-top: -6px;">' +
+            "Reasoning models spend most of their budget thinking before emitting a character of " +
+            "JSON. Too low and the reply arrives truncated, which looks like the model being " +
+            "unavailable.</div>"
+          : "") +
+
+        '<div class="role-stats" data-stats="' + role + '">' +
+          '<div class="metric"><div class="n small">—</div><div class="l">Calls</div></div>' +
+          '<div class="metric"><div class="n small">—</div><div class="l">Tokens</div></div>' +
+          '<div class="metric"><div class="n small">—</div><div class="l">Spend</div></div>' +
+        "</div>" +
+
+        '<details class="prompt"><summary>Instructions</summary>' +
+          '<textarea rows="12" class="mono" id="' + role + '-system">' + esc(a.system) + "</textarea>" +
+        "</details>" +
+
+        (role === "writer"
+          ? '<div class="field"><label for="writer-fallback">Fallback line</label>' +
+            '<input type="text" id="writer-fallback" value="' + esc(a.fallback_opener) + '">' +
+            '<div class="help">Used when the writer fails every attempt. <span class="var">{company}</span> ' +
+            "is filled in. A boring opener beats a confident lie sent to a stranger.</div></div>"
+          : "") +
+      "</article>";
+    }).join("");
+    checkFamily();
+    ["writer-model", "critic-model"].forEach((id) =>
+      $("#" + id).addEventListener("input", checkFamily));
+  }
+
+  function checkFamily() {
+    const w = ($("#writer-model") || {}).value || "";
+    const c = ($("#critic-model") || {}).value || "";
+    const same = w && c && w.split("/")[0] === c.split("/")[0];
+    let warn = $("#familyWarn");
+    if (same && !warn) {
+      warn = document.createElement("div");
+      warn.id = "familyWarn";
+      warn.className = "notice warn";
+      warn.innerHTML = '<span class="mark">!</span><span>The critic now shares a model family ' +
+        "with the writer. A model reviewing its own output shares its own blind spots — pick a " +
+        "different vendor.</span>";
+      $('.role[data-role="critic"]').appendChild(warn);
+    } else if (!same && warn) {
+      warn.remove();
+    }
+  }
+
+  async function loadStats() {
+    let stats = {};
+    try { stats = (await api(q("/api/stats"))) || {}; } catch (e) { return; }
+    ["qualifier", "writer", "critic"].forEach((role) => {
+      const box = $('[data-stats="' + role + '"]');
+      if (!box) return;
+      const s = stats[role];
+      if (!s) {
+        box.innerHTML = '<div class="help" style="color: var(--faint); font-size: 12.5px;">' +
+          "No model run recorded yet in this mode.</div>";
+        return;
+      }
+      const tokens = (s.prompt_tokens || 0) + (s.completion_tokens || 0);
+      const detail = role === "qualifier"
+        ? [["Judged", s.judged], ["Passed", s.passed], ["Rejected", s.rejected]]
+        : role === "writer"
+        ? [["Written", s.written], ["Retried", s.retried], ["Fell back", s.fell_back]]
+        : [["Reviewed", s.reviewed], ["Sent back", s.rejected]];
+      box.innerHTML = detail.map((d) =>
+        '<div class="metric"><div class="n small">' + (d[1] || 0) + '</div><div class="l">' +
+        d[0] + "</div></div>").join("") +
+        '<div class="metric"><div class="n small">' + tokens.toLocaleString() +
+        '</div><div class="l">Tokens</div></div>' +
+        '<div class="metric"><div class="n small">$' + Number(s.spend || 0).toFixed(4) +
+        '</div><div class="l">Spend</div></div>';
+    });
+  }
+
+  function collectAgents() {
+    const out = {};
+    ["qualifier", "writer", "critic"].forEach((role) => {
+      const temp = $("#" + role + "-temp").value;
+      out[role] = {
+        model: $("#" + role + "-model").value.trim(),
+        max_tokens: parseInt($("#" + role + "-tokens").value, 10),
+        temperature: temp === "null" ? null : Number(temp),
+        system: $("#" + role + "-system").value
+      };
+    });
+    out.qualifier.min_score = parseInt($("#qualifier-min").value, 10);
+    out.writer.retries = parseInt($("#writer-retries").value, 10);
+    out.writer.fallback_opener = $("#writer-fallback").value;
+    return out;
+  }
+
+  /* ── Settings: targeting ───────────────────────────────────── */
+  const CHIP_SUGGESTIONS = {
+    titles: ["Founder", "CEO", "Owner", "Coach", "Course Creator", "Online Coach", "Mentor",
+             "Consultant", "Managing Director"],
+    seniorities: ["owner", "founder", "c_suite", "partner", "vp", "director"],
+    locations: ["United States", "United Kingdom", "Australia", "Canada", "Ireland",
+                "New Zealand", "United Arab Emirates", "Singapore"]
+  };
+  let chipState = {};
+
+  function renderChips(group) {
+    const selected = chipState[group] || [];
+    const options = CHIP_SUGGESTIONS[group].slice();
+    selected.forEach((v) => { if (options.indexOf(v) === -1) options.push(v); });
+    $("#chips-" + group).innerHTML =
+      options.map((v) => {
+        const on = selected.indexOf(v) !== -1;
+        return '<button type="button" class="chip" data-group="' + group + '" data-value="' +
+          esc(v) + '" aria-pressed="' + on + '">' + esc(v) +
+          (on ? '<span class="x" aria-hidden="true">×</span>' : "") + "</button>";
+      }).join("") +
+      '<span class="chip-add"><input type="text" placeholder="Add…" data-add="' + group +
+      '" aria-label="Add to ' + group + '"><button type="button" data-addbtn="' + group + '">+</button></span>';
+  }
+
+  function renderTargeting(t) {
+    chipState = {
+      titles: (t.titles || []).slice(),
+      seniorities: (t.seniorities || []).slice(),
+      locations: (t.locations || []).slice()
+    };
+    ["titles", "seniorities", "locations"].forEach(renderChips);
+    $("#empRange").value = (t.employee_ranges || ["1,10"])[0];
+    $("#emailStatus").value = (t.email_status || ["verified"]).join(",");
+    $("#kw").value = t.keywords || "";
+    checkKeyword();
+  }
+
+  document.addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (chip && chip.dataset.group) {
+      const g = chip.dataset.group, v = chip.dataset.value;
+      const i = chipState[g].indexOf(v);
+      if (i === -1) chipState[g].push(v); else chipState[g].splice(i, 1);
+      renderChips(g);
+      return;
+    }
+    const addBtn = e.target.closest("[data-addbtn]");
+    if (addBtn) {
+      const g = addBtn.dataset.addbtn;
+      const input = $('[data-add="' + g + '"]');
+      const v = input.value.trim();
+      if (v && chipState[g].indexOf(v) === -1) { chipState[g].push(v); renderChips(g); }
+      else input.value = "";
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || !e.target.dataset || !e.target.dataset.add) return;
+    e.preventDefault();
+    $('[data-addbtn="' + e.target.dataset.add + '"]').click();
+  });
+
+  function checkKeyword() {
+    const words = $("#kw").value.trim().split(/\s+/).filter(Boolean).length;
+    $("#kwWarn").style.display = words > 1 ? "flex" : "none";
+  }
+  $("#kw").addEventListener("input", checkKeyword);
+
+  function collectTargeting() {
+    return {
+      titles: chipState.titles,
+      seniorities: chipState.seniorities,
+      locations: chipState.locations,
+      employee_ranges: [$("#empRange").value],
+      email_status: $("#emailStatus").value.split(","),
+      keywords: $("#kw").value.trim()
+    };
+  }
+
+  $("#estimateBtn").addEventListener("click", async () => {
+    const pill = $("#poolPill");
+    pill.className = "pill neutral";
+    pill.textContent = "Counting…";
+    try {
+      const r = await api("/api/estimate-pool", { method: "POST" });
+      pill.className = r.total ? "pill ok" : "pill bad";
+      pill.textContent = r.total
+        ? r.total.toLocaleString() + " people match · " + r.already_handled + " already handled"
+        : "0 match — loosen the filters, or check the keyword is one word";
+      refreshPoolNote(r);
+    } catch (e) {
+      pill.className = "pill bad";
+      pill.textContent = "Could not check";
+      toast(e.message, "bad");
+    }
+  });
+
+  let lastPool = null;
+  function refreshPoolNote(r) {
+    if (r) lastPool = r;
+    const note = $("#poolNote");
+    if (!lastPool) {
+      note.innerHTML = "Not checked yet — the Targeting screen can count it for free.";
+      return;
+    }
+    note.innerHTML = '<b style="font-family: var(--mono); color: var(--text-2);">' +
+      lastPool.total.toLocaleString() + "</b> people match your current targeting. " +
+      lastPool.already_handled + " already in the ledger and will be skipped.";
+  }
+
+  /* ── Settings: research ────────────────────────────────────── */
+  function renderResearch(r) {
+    $("#actLinkedin").value = r.linkedin_actor || "";
+    $("#actPosts").value = r.posts_actor || "";
+    $("#actSite").value = r.company_actor || "";
+    $("#postsOn").checked = !!r.posts_enabled;
+    $("#maxPosts").value = r.max_posts;
+    $("#sitePages").value = r.site_pages;
+    $("#minChars").value = r.min_research_chars;
+    $("#conc").value = r.concurrency;
+  }
+
+  function collectResearch() {
+    return {
+      linkedin_actor: $("#actLinkedin").value.trim(),
+      posts_actor: $("#actPosts").value.trim(),
+      company_actor: $("#actSite").value.trim(),
+      posts_enabled: $("#postsOn").checked,
+      max_posts: parseInt($("#maxPosts").value, 10),
+      site_pages: parseInt($("#sitePages").value, 10),
+      min_research_chars: parseInt($("#minChars").value, 10),
+      concurrency: parseInt($("#conc").value, 10)
+    };
+  }
+
+  async function loadDropRate() {
+    let led;
+    try { led = await api(q("/api/ledger")); } catch (e) { return; }
+    const by = led.by_outcome || {};
+    const failed = by.rejected_at_verify || 0;
+    const kept = (by.pushed || 0) + (by.rejected_by_qualifier || 0);
+    const total = led.total || 0;
+    $("#dropTotal").textContent = total || "—";
+    $("#dropKept").textContent = total ? kept : "—";
+    const pct = total ? Math.round((failed / total) * 100) : null;
+    const el = $("#dropPct");
+    el.textContent = pct === null ? "—" : pct + "%";
+    el.style.color = pct === null ? "" : (pct > 50 ? "var(--bad)" : (pct > 30 ? "var(--warn)" : "var(--ok)"));
+  }
+
+  /* ── Settings: campaign ────────────────────────────────────── */
+  const brToText = (s) => String(s || "").replace(/<br\s*\/?>/gi, "\n");
+  const textToBr = (s) => String(s || "").replace(/\r?\n/g, "<br/>");
+
+  function renderCampaign(c) {
+    $("#campPrefix").value = c.name_prefix || "";
+    $("#dailyCap").value = c.daily_limit;
+    $("#tz").value = c.timezone;
+    $("#sendFrom").value = c.send_from;
+    $("#sendTo").value = c.send_to;
+    $("#stopOnReply").checked = !!c.stop_on_reply;
+    $("#unsubHeader").checked = !!c.insert_unsubscribe_header;
+
+    $("#sequenceList").innerHTML = (c.steps || []).map((s, i) =>
+      '<div class="step" data-step="' + i + '">' +
+        '<div class="step-head">' +
+          '<span class="step-day">DAY ' + Number(s.delay) + "</span>" +
+          '<span class="pill neutral">Step ' + (i + 1) + "</span>" +
+          '<span class="hint" style="color: var(--faint); font-size: 12.5px;">' +
+            (i === 0 ? "Sent to everyone" : "Only if no reply") + "</span>" +
+          '<span style="margin-left: auto;" class="field">' +
+            '<input type="number" class="mono" data-delay style="width: 90px;" min="0" max="60" value="' +
+            Number(s.delay) + '" aria-label="Wait days before step ' + (i + 1) + '"></span>' +
+        "</div>" +
+        '<div class="field"><label>Subject</label>' +
+          '<input type="text" data-subject value="' + esc(s.subject) + '"></div>' +
+        '<div class="field"><label>Body</label>' +
+          '<textarea rows="' + (i === 0 ? 9 : 5) + '" data-body>' + esc(brToText(s.body)) + "</textarea>" +
+          (i === 0
+            ? '<div class="help">Merge tags: <span class="var">{{firstName}}</span> ' +
+              '<span class="var">{{companyName}}</span> <span class="var">{{personalization}}</span>' +
+              " — the last one is where the agent's opening sentence lands.</div>"
+            : "") +
+        "</div>" +
+      "</div>").join("");
+  }
+
+  function collectCampaign() {
+    return {
+      name_prefix: $("#campPrefix").value.trim(),
+      daily_limit: parseInt($("#dailyCap").value, 10),
+      timezone: $("#tz").value,
+      send_from: $("#sendFrom").value.trim(),
+      send_to: $("#sendTo").value.trim(),
+      stop_on_reply: $("#stopOnReply").checked,
+      insert_unsubscribe_header: $("#unsubHeader").checked,
+      steps: $$(".step").map((el) => ({
+        delay: parseInt($("[data-delay]", el).value, 10),
+        subject: $("[data-subject]", el).value,
+        body: textToBr($("[data-body]", el).value)
+      }))
+    };
+  }
+
+  /* ── Save / reset wiring ───────────────────────────────────── */
+  const SECTIONS = {
+    agents:    { collect: collectAgents,    render: renderAgents,    save: "#saveAgents",    reset: "#resetAgents" },
+    targeting: { collect: collectTargeting, render: renderTargeting, save: "#saveTargeting", reset: "#resetTargeting" },
+    research:  { collect: collectResearch,  render: renderResearch,  save: "#saveResearch",  reset: "#resetResearch" },
+    campaign:  { collect: collectCampaign,  render: renderCampaign,  save: "#saveCampaign",  reset: "#resetCampaign" }
+  };
+
+  Object.keys(SECTIONS).forEach((name) => {
+    const s = SECTIONS[name];
+    $(s.save).addEventListener("click", async (e) => {
+      e.target.disabled = true;
+      try {
+        const res = await saveJSON("/api/config/" + name, s.collect());
+        CONFIG[name] = res.values;
+        s.render(res.values);
+        if (name === "agents") loadStats();
+        markSettingsEdited();
+        updateCost();
+        toast("Saved. This applies from the next run.", "ok");
+      } catch (err) {
+        toast(err.message, "bad");
+      } finally {
+        e.target.disabled = false;
+      }
+    });
+    $(s.reset).addEventListener("click", async (e) => {
+      if (!window.confirm("Restore the built-in defaults for " + name + "? Your saved values are discarded.")) return;
+      e.target.disabled = true;
+      try {
+        const res = await api("/api/config/" + name + "/reset", { method: "POST" });
+        CONFIG[name] = res.values;
+        s.render(res.values);
+        if (name === "agents") loadStats();
+        updateCost();
+        toast("Defaults restored.", "ok");
+      } catch (err) {
+        toast(err.message, "bad");
+      } finally {
+        e.target.disabled = false;
+      }
+    });
+  });
+
+  function markSettingsEdited() { $("#railSettings").textContent = "customised"; }
+
+  /* ── Ledger ────────────────────────────────────────────────── */
+  const OUTCOME = {
+    pushed:                { cls: "ok",   text: "Pushed to campaign" },
+    rejected_by_qualifier: { cls: "bad",  text: "Rejected by agent" },
+    rejected_at_verify:    { cls: "warn", text: "Failed research" },
+    already_handled:       { cls: "neutral", text: "Already handled" }
+  };
+
+  async function loadLedger(query) {
+    const data = await api(q("/api/ledger") + "&q=" + encodeURIComponent(query || ""));
+    const by = data.by_outcome || {};
+    $("#ledTotal").textContent = data.total || 0;
+    $("#ledPushed").textContent = by.pushed || 0;
+    $("#ledRejected").textContent = by.rejected_by_qualifier || 0;
+    $("#ledFailed").textContent = by.rejected_at_verify || 0;
+
+    const rows = data.entries || [];
+    $("#ledgerWrap").innerHTML = rows.length
+      ? '<div class="table-wrap"><table><thead><tr><th>Person</th><th>Company</th>' +
+        "<th>Outcome</th><th>Campaign</th><th class='mono'>Recorded</th></tr></thead><tbody>" +
+        rows.map((r) => {
+          const o = OUTCOME[r.outcome] || { cls: "neutral", text: r.outcome || "—" };
+          return "<tr>" +
+            "<td>" + esc(r.name || r.key) + "</td>" +
+            "<td>" + esc(r.company || "—") + "</td>" +
+            '<td><span class="pill ' + o.cls + '">' + esc(o.text) + "</span></td>" +
+            '<td class="mono">' + esc(r.campaign || "—") + "</td>" +
+            '<td class="mono">' + esc(fmtTime(r.at)) + "</td>" +
+          "</tr>";
+        }).join("") + "</tbody></table></div>"
+      : '<div class="empty">' + (query
+          ? "Nobody on record matches that. They have never been contacted by this project."
+          : "The ledger is empty in " + (mock ? "test" : "live") + " mode — nobody has been handled yet.") +
+        "</div>";
+  }
+
+  let ledgerTimer;
+  $("#ledgerSearch").addEventListener("input", (e) => {
+    clearTimeout(ledgerTimer);
+    const v = e.target.value;
+    ledgerTimer = setTimeout(() => loadLedger(v).catch((err) => toast(err.message, "bad")), 220);
+  });
+
+  /* ── Mailbox check (hits Instantly, so on demand only) ─────── */
+  $("#mailboxBtn").addEventListener("click", async (e) => {
+    e.target.textContent = "…";
+    try {
+      const r = await api("/api/mailboxes");
+      if (r.error) {
+        e.target.outerHTML = '<span style="color: var(--warn);">unavailable</span>';
+        toast(r.error, "bad");
+      } else {
+        e.target.outerHTML = '<span style="color: var(--ok);">' + r.usable + " healthy</span>";
+      }
+    } catch (err) {
+      e.target.textContent = "Check";
+      toast(err.message, "bad");
+    }
+  });
+
+  /* ── Boot ──────────────────────────────────────────────────── */
+  (async function boot() {
+    try {
+      CONFIG = await api("/api/config");
+    } catch (e) {
+      document.body.insertAdjacentHTML("afterbegin",
+        '<div class="banner" style="margin: 20px;">Could not load settings: ' + esc(e.message) + "</div>");
+      return;
+    }
+    renderAgents(CONFIG.agents);
+    renderTargeting(CONFIG.targeting);
+    renderResearch(CONFIG.research);
+    renderCampaign(CONFIG.campaign);
+    syncStageToggles();
+    await Promise.all([loadLeads(), loadRuns(), pollStatus()]).catch(() => {});
+    // If a run was already going when the page opened, pick the polling back up.
+    const state = await api("/api/run-status").catch(() => null);
+    if (state && state.running && !polling) polling = setInterval(pollStatus, 1200);
+  })();
+})();
+</script>
+</body>
+</html>

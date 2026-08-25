@@ -1,0 +1,33 @@
+# ── Secrets ───────────────────────────────────────────────────────────────────
+# .env holds four live API keys. Never commit it. Only .env.example belongs here.
+.env
+.env.*
+!.env.example
+
+# ── Run state and lead data ───────────────────────────────────────────────────
+# .tmp/ holds real people's names, email addresses and LinkedIn URLs (the current
+# batch and the permanent contact ledger). It is disposable machine state AND
+# personal data, so the whole directory is excluded.
+#
+# `.tmp/*` rather than `.tmp/` so the fixtures exception below can re-include a
+# path inside it — git cannot un-ignore a file whose parent directory is ignored.
+# The fixtures are fictional sample people, used by --mock runs, and are safe.
+.tmp/*
+!.tmp/fixtures/
+
+# Machine-local settings written by the dashboard. The defaults that ship with the
+# project live in tools/config.py; this file is whatever this machine changed.
+settings.json
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# ── Tooling and OS noise ──────────────────────────────────────────────────────
+.gstack/
+.claude/
+*.lock
+.DS_Store
